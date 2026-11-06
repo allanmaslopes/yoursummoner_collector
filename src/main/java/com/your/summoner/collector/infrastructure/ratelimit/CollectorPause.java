@@ -1,5 +1,6 @@
 package com.your.summoner.collector.infrastructure.ratelimit;
 
+import com.your.summoner.collector.application.port.out.CollectorState;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Pausa global quando a chave da Riot é recusada (401/403); libera quando a chave do cofre muda. */
-public class CollectorPause {
+public class CollectorPause implements CollectorState {
 
     private static final Logger log = LoggerFactory.getLogger(CollectorPause.class);
     static final Duration RECHECK = Duration.ofMinutes(5);
@@ -45,6 +46,11 @@ public class CollectorPause {
 
     public synchronized boolean isPaused() {
         return paused;
+    }
+
+    @Override
+    public boolean paused() {
+        return isPaused();
     }
 
     /** Zero se não está pausado (ou se a chave mudou agora); senão, quanto falta para a próxima checagem. */

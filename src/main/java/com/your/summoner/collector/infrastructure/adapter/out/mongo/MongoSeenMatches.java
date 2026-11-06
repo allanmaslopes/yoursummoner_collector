@@ -4,6 +4,8 @@ import com.your.summoner.collector.application.port.out.SeenMatches;
 import org.bson.Document;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -25,5 +27,10 @@ class MongoSeenMatches implements SeenMatches {
         } catch (DuplicateKeyException e) {
             return false;
         }
+    }
+
+    @Override
+    public void forget(String matchId) {
+        mongo.remove(new Query(Criteria.where("_id").is(matchId)), COLLECTION);
     }
 }
