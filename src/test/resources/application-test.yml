@@ -1,0 +1,10 @@
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 8.0.0
+riot:
+  api:
+    token: test-key
+collector:
+  enabled: false
