@@ -1,0 +1,1051 @@
+{
+  "_fixture_note": "sint\u00e9tico",
+  "metadata": {
+    "dataVersion": "2",
+    "matchId": "BR1_3000000001",
+    "participants": [
+      "FAKE-PUUID-01-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-02-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-03-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-04-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-05-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-06-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-07-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-08-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-09-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "FAKE-PUUID-10-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  "info": {
+    "endOfGameResult": "GameComplete",
+    "gameCreation": 1792159990000,
+    "gameDuration": 1834,
+    "gameEndTimestamp": 1792161834000,
+    "gameId": 3000000001,
+    "gameMode": "CLASSIC",
+    "gameName": "teambuilder-match-3000000001",
+    "gameStartTimestamp": 1792160000000,
+    "gameType": "MATCHED_GAME",
+    "gameVersion": "16.22.712.1234",
+    "mapId": 11,
+    "platformId": "BR1",
+    "queueId": 420,
+    "tournamentCode": "",
+    "participants": [
+      {
+        "participantId": 1,
+        "puuid": "FAKE-PUUID-01-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer1",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner1",
+        "summonerId": "fake-summoner-id-1",
+        "summonerLevel": 101,
+        "profileIcon": 29,
+        "teamId": 100,
+        "championId": 266,
+        "championName": "Fake",
+        "teamPosition": "TOP",
+        "individualPosition": "TOP",
+        "win": true,
+        "champLevel": 14,
+        "kills": 0,
+        "deaths": 10,
+        "assists": 2,
+        "physicalDamageDealtToChampions": 9000,
+        "magicDamageDealtToChampions": 4000,
+        "trueDamageDealtToChampions": 300,
+        "totalDamageDealtToChampions": 13300,
+        "totalDamageTaken": 15000,
+        "goldEarned": 9000,
+        "totalMinionsKilled": 120,
+        "neutralMinionsKilled": 4,
+        "visionScore": 10,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 2,
+        "puuid": "FAKE-PUUID-02-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer2",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner2",
+        "summonerId": "fake-summoner-id-2",
+        "summonerLevel": 102,
+        "profileIcon": 29,
+        "teamId": 100,
+        "championId": 64,
+        "championName": "Fake",
+        "teamPosition": "JUNGLE",
+        "individualPosition": "JUNGLE",
+        "win": true,
+        "champLevel": 15,
+        "kills": 1,
+        "deaths": 9,
+        "assists": 3,
+        "physicalDamageDealtToChampions": 9100,
+        "magicDamageDealtToChampions": 4050,
+        "trueDamageDealtToChampions": 301,
+        "totalDamageDealtToChampions": 13451,
+        "totalDamageTaken": 15200,
+        "goldEarned": 9300,
+        "totalMinionsKilled": 125,
+        "neutralMinionsKilled": 80,
+        "visionScore": 11,
+        "item0": 3071,
+        "item1": 3047,
+        "item2": 6692,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3364,
+        "summoner1Id": 4,
+        "summoner2Id": 11,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 3,
+        "puuid": "FAKE-PUUID-03-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer3",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner3",
+        "summonerId": "fake-summoner-id-3",
+        "summonerLevel": 103,
+        "profileIcon": 29,
+        "teamId": 100,
+        "championId": 103,
+        "championName": "Fake",
+        "teamPosition": "MIDDLE",
+        "individualPosition": "MIDDLE",
+        "win": true,
+        "champLevel": 16,
+        "kills": 2,
+        "deaths": 8,
+        "assists": 4,
+        "physicalDamageDealtToChampions": 9200,
+        "magicDamageDealtToChampions": 4100,
+        "trueDamageDealtToChampions": 302,
+        "totalDamageDealtToChampions": 13602,
+        "totalDamageTaken": 15400,
+        "goldEarned": 9600,
+        "totalMinionsKilled": 130,
+        "neutralMinionsKilled": 4,
+        "visionScore": 12,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 4,
+        "puuid": "FAKE-PUUID-04-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer4",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner4",
+        "summonerId": "fake-summoner-id-4",
+        "summonerLevel": 104,
+        "profileIcon": 29,
+        "teamId": 100,
+        "championId": 222,
+        "championName": "Fake",
+        "teamPosition": "BOTTOM",
+        "individualPosition": "BOTTOM",
+        "win": true,
+        "champLevel": 17,
+        "kills": 3,
+        "deaths": 7,
+        "assists": 5,
+        "physicalDamageDealtToChampions": 9300,
+        "magicDamageDealtToChampions": 4150,
+        "trueDamageDealtToChampions": 303,
+        "totalDamageDealtToChampions": 13753,
+        "totalDamageTaken": 15600,
+        "goldEarned": 9900,
+        "totalMinionsKilled": 135,
+        "neutralMinionsKilled": 4,
+        "visionScore": 13,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 5,
+        "puuid": "FAKE-PUUID-05-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer5",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner5",
+        "summonerId": "fake-summoner-id-5",
+        "summonerLevel": 105,
+        "profileIcon": 29,
+        "teamId": 100,
+        "championId": 412,
+        "championName": "Fake",
+        "teamPosition": "UTILITY",
+        "individualPosition": "UTILITY",
+        "win": true,
+        "champLevel": 14,
+        "kills": 4,
+        "deaths": 6,
+        "assists": 6,
+        "physicalDamageDealtToChampions": 9400,
+        "magicDamageDealtToChampions": 4200,
+        "trueDamageDealtToChampions": 304,
+        "totalDamageDealtToChampions": 13904,
+        "totalDamageTaken": 15800,
+        "goldEarned": 10200,
+        "totalMinionsKilled": 140,
+        "neutralMinionsKilled": 4,
+        "visionScore": 14,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 6,
+        "puuid": "FAKE-PUUID-06-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer6",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner6",
+        "summonerId": "fake-summoner-id-6",
+        "summonerLevel": 106,
+        "profileIcon": 29,
+        "teamId": 200,
+        "championId": 24,
+        "championName": "Fake",
+        "teamPosition": "TOP",
+        "individualPosition": "TOP",
+        "win": false,
+        "champLevel": 15,
+        "kills": 5,
+        "deaths": 5,
+        "assists": 7,
+        "physicalDamageDealtToChampions": 9500,
+        "magicDamageDealtToChampions": 4250,
+        "trueDamageDealtToChampions": 305,
+        "totalDamageDealtToChampions": 14055,
+        "totalDamageTaken": 16000,
+        "goldEarned": 10500,
+        "totalMinionsKilled": 145,
+        "neutralMinionsKilled": 4,
+        "visionScore": 15,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 7,
+        "puuid": "FAKE-PUUID-07-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer7",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner7",
+        "summonerId": "fake-summoner-id-7",
+        "summonerLevel": 107,
+        "profileIcon": 29,
+        "teamId": 200,
+        "championId": 254,
+        "championName": "Fake",
+        "teamPosition": "JUNGLE",
+        "individualPosition": "JUNGLE",
+        "win": false,
+        "champLevel": 16,
+        "kills": 6,
+        "deaths": 4,
+        "assists": 8,
+        "physicalDamageDealtToChampions": 9600,
+        "magicDamageDealtToChampions": 4300,
+        "trueDamageDealtToChampions": 306,
+        "totalDamageDealtToChampions": 14206,
+        "totalDamageTaken": 16200,
+        "goldEarned": 10800,
+        "totalMinionsKilled": 150,
+        "neutralMinionsKilled": 80,
+        "visionScore": 16,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 11,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 8,
+        "puuid": "FAKE-PUUID-08-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer8",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner8",
+        "summonerId": "fake-summoner-id-8",
+        "summonerLevel": 108,
+        "profileIcon": 29,
+        "teamId": 200,
+        "championId": 238,
+        "championName": "Fake",
+        "teamPosition": "MIDDLE",
+        "individualPosition": "MIDDLE",
+        "win": false,
+        "champLevel": 17,
+        "kills": 7,
+        "deaths": 3,
+        "assists": 9,
+        "physicalDamageDealtToChampions": 9700,
+        "magicDamageDealtToChampions": 4350,
+        "trueDamageDealtToChampions": 307,
+        "totalDamageDealtToChampions": 14357,
+        "totalDamageTaken": 16400,
+        "goldEarned": 11100,
+        "totalMinionsKilled": 155,
+        "neutralMinionsKilled": 4,
+        "visionScore": 17,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 9,
+        "puuid": "FAKE-PUUID-09-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer9",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner9",
+        "summonerId": "fake-summoner-id-9",
+        "summonerLevel": 109,
+        "profileIcon": 29,
+        "teamId": 200,
+        "championId": 81,
+        "championName": "Fake",
+        "teamPosition": "BOTTOM",
+        "individualPosition": "BOTTOM",
+        "win": false,
+        "champLevel": 14,
+        "kills": 8,
+        "deaths": 2,
+        "assists": 10,
+        "physicalDamageDealtToChampions": 9800,
+        "magicDamageDealtToChampions": 4400,
+        "trueDamageDealtToChampions": 308,
+        "totalDamageDealtToChampions": 14508,
+        "totalDamageTaken": 16600,
+        "goldEarned": 11400,
+        "totalMinionsKilled": 160,
+        "neutralMinionsKilled": 4,
+        "visionScore": 18,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      },
+      {
+        "participantId": 10,
+        "puuid": "FAKE-PUUID-10-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "riotIdGameName": "FakePlayer10",
+        "riotIdTagline": "FAKE",
+        "summonerName": "FakeSummoner10",
+        "summonerId": "fake-summoner-id-10",
+        "summonerLevel": 110,
+        "profileIcon": 29,
+        "teamId": 200,
+        "championId": 555,
+        "championName": "Fake",
+        "teamPosition": "UTILITY",
+        "individualPosition": "UTILITY",
+        "win": false,
+        "champLevel": 15,
+        "kills": 9,
+        "deaths": 1,
+        "assists": 11,
+        "physicalDamageDealtToChampions": 9900,
+        "magicDamageDealtToChampions": 4450,
+        "trueDamageDealtToChampions": 309,
+        "totalDamageDealtToChampions": 14659,
+        "totalDamageTaken": 16800,
+        "goldEarned": 11700,
+        "totalMinionsKilled": 165,
+        "neutralMinionsKilled": 4,
+        "visionScore": 19,
+        "item0": 1055,
+        "item1": 0,
+        "item2": 0,
+        "item3": 0,
+        "item4": 0,
+        "item5": 0,
+        "item6": 3340,
+        "summoner1Id": 4,
+        "summoner2Id": 14,
+        "perks": {
+          "statPerks": {
+            "defense": 5002,
+            "flex": 5008,
+            "offense": 5005
+          },
+          "styles": [
+            {
+              "description": "primaryStyle",
+              "style": 8000,
+              "selections": [
+                {
+                  "perk": 8005,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8006,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8007,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 8008,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            },
+            {
+              "description": "subStyle",
+              "style": 8100,
+              "selections": [
+                {
+                  "perk": 9111,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                },
+                {
+                  "perk": 9105,
+                  "var1": 1,
+                  "var2": 2,
+                  "var3": 3
+                }
+              ]
+            }
+          ]
+        },
+        "challenges": {
+          "soloKills": 1
+        }
+      }
+    ],
+    "teams": [
+      {
+        "teamId": 100,
+        "win": true,
+        "bans": [
+          {
+            "championId": 222,
+            "pickTurn": 1
+          }
+        ],
+        "objectives": {
+          "baron": {
+            "first": true,
+            "kills": 1
+          }
+        }
+      },
+      {
+        "teamId": 200,
+        "win": false,
+        "bans": [
+          {
+            "championId": -1,
+            "pickTurn": 6
+          }
+        ],
+        "objectives": {
+          "baron": {
+            "first": false,
+            "kills": 0
+          }
+        }
+      }
+    ]
+  }
+}
