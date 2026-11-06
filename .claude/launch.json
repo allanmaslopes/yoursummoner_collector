@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "collector",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "D:/Workspace/yoursummoner_collector/.claude/run-collector.cmd"
+      ],
+      "port": 8081
+    }
+  ]
+}

@@ -26,12 +26,14 @@ public class RegionWorkers implements SmartLifecycle {
     static final Duration WAIT = Duration.ofSeconds(30);
 
     private final CollectService collect;
+    private final CollectorMetrics metrics;
     private final Set<Region> regions = EnumSet.noneOf(Region.class);
     private final List<Thread> threads = new ArrayList<>();
     private volatile boolean running;
 
-    public RegionWorkers(CollectService collect, CollectorProperties props) {
+    public RegionWorkers(CollectService collect, CollectorProperties props, CollectorMetrics metrics) {
         this.collect = collect;
+        this.metrics = metrics;
         props.platforms().stream().map(Platform::matchRegion).forEach(regions::add);
     }
 
@@ -59,7 +61,9 @@ public class RegionWorkers implements SmartLifecycle {
     private void loop(Region region) {
         while (running) {
             try {
-                if (collect.collectOne(region) == CollectOutcome.IDLE) {
+                CollectOutcome outcome = collect.collectOne(region);
+                metrics.record(region, outcome);
+                if (outcome == CollectOutcome.IDLE) {
                     Thread.sleep(WAIT);
                 }
             } catch (InterruptedException e) {

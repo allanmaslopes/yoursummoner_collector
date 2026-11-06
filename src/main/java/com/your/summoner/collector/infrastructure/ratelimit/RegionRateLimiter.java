@@ -102,6 +102,24 @@ public class RegionRateLimiter implements RequestBudget, RateLimitObserver {
         }
     }
 
+    /** "usadas/teto" na maior janela do host, ou null se o host ainda não foi usado. Só leitura. */
+    public String usage(String host) {
+        lock.lock();
+        try {
+            Scope a = app.get(host);
+            if (a == null || a.limits.isEmpty()) {
+                return null;
+            }
+            RateLimitHeaders.Limit l = a.limits.stream()
+                    .max(java.util.Comparator.comparingInt(RateLimitHeaders.Limit::windowSec)).get();
+            long since = clock.millis() - l.windowSec() * 1000L;
+            long used = a.stamps.stream().filter(t -> t > since).count();
+            return used + "/" + Math.max(1, (int) Math.floor(l.limit() * fraction));
+        } finally {
+            lock.unlock();
+        }
+    }
+
     /** 0 = vaga reservada; senão, ms até valer a pena tentar de novo. */
     private long tryReserve(RouteKey key) {
         lock.lock();

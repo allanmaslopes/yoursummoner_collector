@@ -20,6 +20,12 @@ spring:
     deserialization:
       fail-on-null-for-primitives: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
 riot:
   api:
     # Nunca chamar de riot.api.key: a env RIOT_API_KEY mapearia direto e vazaria para os testes
