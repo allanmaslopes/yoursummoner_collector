@@ -124,6 +124,19 @@ class RegionRateLimiterTest {
     }
 
     @Test
+    void pauseProbesAgainAfterThirtyMinutesWithSameKey() throws Exception {
+        RegionRateLimiter l = new RegionRateLimiter(clock, d -> clock.advanceTo(clock.millis() + d.toMillis()),
+                new RateLimitProperties(0.6), pause);
+        l.onResponse("br1", "match", 401, Map.of());
+        long start = clock.millis();
+
+        l.acquire(new RouteKey("br1", "match")); // a chave nunca muda
+
+        assertThat(pause.isPaused()).isFalse();
+        assertThat(clock.millis() - start).isGreaterThanOrEqualTo(Duration.ofMinutes(30).toMillis());
+    }
+
+    @Test
     void forbiddenAlsoPauses() {
         limiter.onResponse("br1", "match", 403, Map.of());
         assertThat(pause.isPaused()).isTrue();

@@ -46,6 +46,7 @@ public abstract class RiotApiWireMock {
     @TestConfiguration
     static class ObserverConfig {
         @Bean
+        @org.springframework.context.annotation.Primary
         RateLimitObserver recordingObserver() {
             return (host, method, status, headers) -> SEEN.add(new Seen(host, method, status, headers));
         }

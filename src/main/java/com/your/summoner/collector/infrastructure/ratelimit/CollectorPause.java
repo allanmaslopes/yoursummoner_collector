@@ -17,12 +17,14 @@ public class CollectorPause {
 
     private static final Logger log = LoggerFactory.getLogger(CollectorPause.class);
     static final Duration RECHECK = Duration.ofMinutes(5);
+    static final Duration PROBE = Duration.ofMinutes(30);
 
     private final Clock clock;
     private final Supplier<Optional<String>> currentKey;
     private boolean paused;
     private String rejectedHash;
     private long nextCheckMs;
+    private long pausedAtMs;
 
     public CollectorPause(Clock clock, Supplier<Optional<String>> currentKey) {
         this.clock = clock;
@@ -35,6 +37,7 @@ public class CollectorPause {
             return;
         }
         paused = true;
+        pausedAtMs = clock.millis();
         rejectedHash = hashOfCurrent();
         nextCheckMs = clock.millis() + RECHECK.toMillis();
         log.warn("Riot recusou a chave (401/403): coleta pausada até a chave mudar no cofre");
@@ -56,6 +59,12 @@ public class CollectorPause {
         if (!Objects.equals(hashOfCurrent(), rejectedHash)) {
             paused = false;
             log.info("Chave da Riot mudou: coleta retomada");
+            return Duration.ZERO;
+        }
+        // A chave pode ter mudado entre a requisição e o 401: tenta de novo de tempos em tempos; outro 401 repausa.
+        if (now - pausedAtMs >= PROBE.toMillis()) {
+            paused = false;
+            log.info("Coleta pausada há {} min: nova tentativa com a chave atual", PROBE.toMinutes());
             return Duration.ZERO;
         }
         nextCheckMs = now + RECHECK.toMillis();

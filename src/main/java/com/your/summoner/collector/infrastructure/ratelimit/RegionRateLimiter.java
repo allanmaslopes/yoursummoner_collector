@@ -1,5 +1,6 @@
 package com.your.summoner.collector.infrastructure.ratelimit;
 
+import com.your.summoner.collector.infrastructure.adapter.out.riot.RateLimitObserver;
 import com.your.summoner.collector.application.port.out.RequestBudget;
 import com.your.summoner.collector.application.port.out.RouteKey;
 import java.time.Clock;
@@ -14,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Janela deslizante por host (App limit) e por host+método (Method limit), com teto = limite x fração.
  * Quem não tem vaga dorme o tempo calculado até a próxima (sem busy-wait) e tenta de novo.
  */
-public class RegionRateLimiter implements RequestBudget {
+public class RegionRateLimiter implements RequestBudget, RateLimitObserver {
 
     @FunctionalInterface
     public interface Sleeper {
@@ -68,6 +69,7 @@ public class RegionRateLimiter implements RequestBudget {
     }
 
     /** Chamada a cada resposta da Riot: ajusta os limites e reage a 429 e 401/403. */
+    @Override
     public void onResponse(String host, String method, int status, Map<String, String> headers) {
         if (status == 401 || status == 403) {
             pause.pause();
