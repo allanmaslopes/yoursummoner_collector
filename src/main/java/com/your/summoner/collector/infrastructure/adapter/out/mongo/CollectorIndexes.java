@@ -23,6 +23,7 @@ class CollectorIndexes implements InitializingBean {
         matches.createIndex(new Index().on("matchId", Sort.Direction.ASC).unique());
         matches.createIndex(new Index().on("collectedAt", Sort.Direction.ASC));
         matches.createIndex(new Index().on("patch", Sort.Direction.ASC));
+        matches.createIndex(new Index().on("patch", Sort.Direction.ASC).on("region", Sort.Direction.ASC));
         mongo.indexOps(MongoSeenMatches.COLLECTION)
                 .createIndex(new Index().on("seenAt", Sort.Direction.ASC).expire(Duration.ofDays(30)));
         var queue = mongo.indexOps(MongoPlayerQueue.COLLECTION);

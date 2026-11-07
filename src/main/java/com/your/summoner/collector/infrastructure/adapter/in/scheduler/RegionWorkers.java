@@ -24,6 +24,7 @@ public class RegionWorkers implements SmartLifecycle {
 
     private static final Logger log = LoggerFactory.getLogger(RegionWorkers.class);
     static final Duration WAIT = Duration.ofSeconds(30);
+    static final Duration CAPPED_WAIT = Duration.ofMinutes(10);
 
     private final CollectService collect;
     private final CollectorMetrics metrics;
@@ -63,8 +64,8 @@ public class RegionWorkers implements SmartLifecycle {
             try {
                 CollectOutcome outcome = collect.collectOne(region);
                 metrics.record(region, outcome);
-                if (outcome == CollectOutcome.IDLE) {
-                    Thread.sleep(WAIT);
+                if (outcome == CollectOutcome.IDLE || outcome == CollectOutcome.CAPPED) {
+                    Thread.sleep(outcome == CollectOutcome.CAPPED ? CAPPED_WAIT : WAIT);
                 }
             } catch (InterruptedException e) {
                 return;

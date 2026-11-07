@@ -3,6 +3,7 @@ package com.your.summoner.collector.application.service;
 import com.your.summoner.collector.application.port.out.CollectorState;
 import com.your.summoner.collector.application.port.out.MatchSource;
 import com.your.summoner.collector.application.port.out.MatchStore;
+import com.your.summoner.collector.application.port.out.MatchCap;
 import com.your.summoner.collector.application.port.out.PatchCatalog;
 import com.your.summoner.collector.application.port.out.PlayerQueue;
 import com.your.summoner.collector.application.port.out.QueuedPlayer;
@@ -21,7 +22,9 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** Coleta um jogador da fila por chamada. A partida só é gravada inteira, no fim, e só se a coleta não pausou. */
 @Service
@@ -30,6 +33,11 @@ public class CollectService {
     private static final int RANKED_SOLO = 420;
     // shortcut: janela fixa de 28 dias em vez do início real do patch anterior; trocar se o catálogo passar a dar datas.
     private static final Duration LOOKBACK = Duration.ofDays(28);
+    private static final Duration CAP_COUNT_TTL = Duration.ofSeconds(60);
+
+    private record CapKey(String patch, Region region) { }
+
+    private record CachedCount(long value, Instant readAt) { }
 
     /** Sinal interno de que a chave foi recusada no meio do caminho. */
     private static final class Paused extends RuntimeException {
@@ -47,10 +55,12 @@ public class CollectService {
     private final MatchReducer reducer;
     private final CollectorState state;
     private final Clock clock;
+    private final int maxMatchesPerPatch;
+    private final Map<CapKey, CachedCount> patchCounts = new ConcurrentHashMap<>();
 
     public CollectService(PlayerQueue queue, MatchSource source, SeenMatches seen, MatchStore store,
                           RequestBudget budget, PatchCatalog patches, MatchReducer reducer, CollectorState state,
-                          Clock clock) {
+                          Clock clock, MatchCap cap) {
         this.queue = queue;
         this.source = source;
         this.seen = seen;
@@ -60,12 +70,16 @@ public class CollectService {
         this.reducer = reducer;
         this.state = state;
         this.clock = clock;
+        this.maxMatchesPerPatch = cap.maxMatchesPerPatch();
     }
 
     public CollectOutcome collectOne(Region region) {
         List<PatchVersion> accepted = patches.currentAndPrevious();
         if (accepted.isEmpty()) {
             return CollectOutcome.IDLE; // sem saber o patch, não grava nada
+        }
+        if (maxMatchesPerPatch > 0 && accepted.stream().allMatch(patch -> capped(patch, region))) {
+            return CollectOutcome.CAPPED;
         }
         Optional<QueuedPlayer> next = queue.poll(region);
         if (next.isEmpty()) {
@@ -124,8 +138,12 @@ public class CollectService {
         if (info.queueId() != RANKED_SOLO) {
             return CollectOutcome.DISCARDED_QUEUE;
         }
-        if (PatchVersion.fromGameVersion(info.gameVersion()).filter(accepted::contains).isEmpty()) {
+        Optional<PatchVersion> patch = PatchVersion.fromGameVersion(info.gameVersion()).filter(accepted::contains);
+        if (patch.isEmpty()) {
             return CollectOutcome.DISCARDED_PATCH;
+        }
+        if (capped(patch.get(), region)) {
+            return CollectOutcome.CAPPED;
         }
         acquire(region, "timeline");
         Optional<RiotTimeline> timeline = source.timeline(region, id);
@@ -139,7 +157,11 @@ public class CollectService {
         } catch (IllegalArgumentException e) {
             return CollectOutcome.DISCARDED_PATCH;
         }
-        return store.saveIfAbsent(reduced) ? CollectOutcome.SAVED : CollectOutcome.DUPLICATE;
+        if (!store.saveIfAbsent(reduced)) {
+            return CollectOutcome.DUPLICATE;
+        }
+        incrementCachedCount(reduced.patch(), region);
+        return CollectOutcome.SAVED;
     }
 
     private void acquire(Region region, String method) throws InterruptedException {
@@ -149,6 +171,25 @@ public class CollectService {
     private void checkPause() {
         if (state.paused()) {
             throw new Paused();
+        }
+    }
+
+    private boolean capped(PatchVersion patch, Region region) {
+        if (maxMatchesPerPatch == 0) {
+            return false;
+        }
+        CapKey key = new CapKey(patch.toString(), region);
+        Instant now = Instant.now(clock);
+        CachedCount count = patchCounts.compute(key, (ignored, current) ->
+                current != null && current.readAt().plus(CAP_COUNT_TTL).isAfter(now)
+                        ? current : new CachedCount(store.countByPatchAndRegion(key.patch(), key.region()), now));
+        return count.value() >= maxMatchesPerPatch;
+    }
+
+    private void incrementCachedCount(String patch, Region region) {
+        if (maxMatchesPerPatch > 0) {
+            CapKey key = new CapKey(patch, region);
+            patchCounts.computeIfPresent(key, (ignored, count) -> new CachedCount(count.value() + 1, count.readAt()));
         }
     }
 }

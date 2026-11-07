@@ -22,7 +22,7 @@ class CollectorMetricsTest {
         CollectorState state = mock(CollectorState.class);
         when(queue.pending(Region.AMERICAS)).thenReturn(5);
         when(state.paused()).thenReturn(true);
-        var props = new CollectorProperties(true, java.util.List.of(Platform.BR1), "0 0 */6 * * *", 3, "http://x");
+        var props = new CollectorProperties(true, java.util.List.of(Platform.BR1), "0 0 */6 * * *", 3, 15_000, "http://x");
         var metrics = new CollectorMetrics(registry, queue, state, props);
 
         metrics.record(Region.AMERICAS, CollectOutcome.SAVED);

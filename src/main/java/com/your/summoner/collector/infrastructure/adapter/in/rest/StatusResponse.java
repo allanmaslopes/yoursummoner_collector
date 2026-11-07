@@ -7,6 +7,7 @@ import java.util.Map;
 public record StatusResponse(String state, List<RegionStatus> regions) {
 
     public record RegionStatus(String region, int pendingPlayers, long matchesLastHour, long matchesLastDay,
-                               String lastOutcome, Map<String, String> budgetUsed) {
+                               String lastOutcome, Map<String, String> budgetUsed, boolean capped,
+                               Map<String, Long> matchesByPatch) {
     }
 }

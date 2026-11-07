@@ -42,6 +42,7 @@ collector:
   yoursummoner-api-url: http://localhost:8080/your-summoner
   budget-fraction: 0.6
   retention-patches: 3
+  max-matches-per-patch: 15000
   seed-cron: "0 0 */6 * * *"
   platforms: BR1,NA1,LA1,LA2,EUW1,EUN1,TR1,RU,ME1,KR,JP1,OC1,SG2,TW2,VN2
 

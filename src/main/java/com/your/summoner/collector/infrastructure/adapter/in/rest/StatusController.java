@@ -3,6 +3,7 @@ package com.your.summoner.collector.infrastructure.adapter.in.rest;
 import com.your.summoner.collector.application.port.out.CollectorState;
 import com.your.summoner.collector.application.port.out.MatchStore;
 import com.your.summoner.collector.application.port.out.PlayerQueue;
+import com.your.summoner.collector.application.port.out.PatchCatalog;
 import com.your.summoner.collector.domain.model.Platform;
 import com.your.summoner.collector.domain.model.Region;
 import com.your.summoner.collector.infrastructure.adapter.in.rest.StatusResponse.RegionStatus;
@@ -28,14 +29,16 @@ class StatusController {
     private final MatchStore store;
     private final CollectorMetrics metrics;
     private final RegionRateLimiter limiter;
+    private final PatchCatalog patches;
     private final Clock clock;
 
     StatusController(CollectorProperties props, CollectorState state, PlayerQueue queue, MatchStore store,
-                     CollectorMetrics metrics, RegionRateLimiter limiter, Clock clock) {
+                     PatchCatalog patches, CollectorMetrics metrics, RegionRateLimiter limiter, Clock clock) {
         this.props = props;
         this.state = state;
         this.queue = queue;
         this.store = store;
+        this.patches = patches;
         this.metrics = metrics;
         this.limiter = limiter;
         this.clock = clock;
@@ -54,9 +57,14 @@ class StatusController {
         Map<String, String> budget = new LinkedHashMap<>();
         put(budget, r.host());
         props.platforms().stream().filter(p -> p.matchRegion() == r).forEach(p -> put(budget, p.host()));
+        Map<String, Long> matchesByPatch = new LinkedHashMap<>();
+        patches.currentAndPrevious().forEach(patch ->
+                matchesByPatch.put(patch.toString(), store.countByPatchAndRegion(patch.toString(), r)));
+        boolean capped = props.maxMatchesPerPatch() > 0 && !matchesByPatch.isEmpty()
+                && matchesByPatch.values().stream().allMatch(count -> count >= props.maxMatchesPerPatch());
         return new RegionStatus(r.name(), queue.pending(r), store.countSince(now.minus(Duration.ofHours(1)), r),
                 store.countSince(now.minus(Duration.ofDays(1)), r),
-                metrics.lastOutcome(r).map(Enum::name).orElse(null), budget);
+                metrics.lastOutcome(r).map(Enum::name).orElse(null), budget, capped, matchesByPatch);
     }
 
     private void put(Map<String, String> budget, String host) {

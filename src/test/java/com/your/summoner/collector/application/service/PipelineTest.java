@@ -66,12 +66,17 @@ class PipelineTest {
 
     @BeforeEach
     void setUp() {
-        service = new CollectService(queue, source, seen, store, budget, catalog, reducer, paused::get, clock);
+        service = serviceWithCap(15_000);
         when(queue.poll(Region.AMERICAS)).thenReturn(Optional.of(PLAYER));
         when(source.rankedMatchIds(any(), anyString(), any())).thenReturn(List.of("BR1_1"));
         when(source.timeline(any(), anyString())).thenReturn(Optional.of(new RiotTimeline(
                 new RiotTimeline.Info(60000, List.of()))));
         when(store.saveIfAbsent(any())).thenReturn(true);
+    }
+
+    private CollectService serviceWithCap(int maxMatchesPerPatch) {
+        return new CollectService(queue, source, seen, store, budget, catalog, reducer, paused::get, clock,
+                () -> maxMatchesPerPatch);
     }
 
     private static RiotMatch match(String id, int queueId, String gameVersion) {
@@ -126,6 +131,53 @@ class PipelineTest {
         assertThat(service.collectOne(Region.AMERICAS)).isEqualTo(CollectOutcome.DUPLICATE);
 
         verify(source, never()).match(any(), anyString());
+    }
+
+    @Test
+    void cappedRegionDoesNotConsumeQueue() {
+        when(store.countByPatchAndRegion("16.22", Region.AMERICAS)).thenReturn(15_000L);
+        when(store.countByPatchAndRegion("16.21", Region.AMERICAS)).thenReturn(15_000L);
+
+        assertThat(service.collectOne(Region.AMERICAS)).isEqualTo(CollectOutcome.CAPPED);
+
+        verify(queue, never()).poll(Region.AMERICAS);
+    }
+
+    @Test
+    void cappedPatchIsDiscardedBeforeTimeline() {
+        when(store.countByPatchAndRegion("16.22", Region.AMERICAS)).thenReturn(15_000L);
+        matchIs("BR1_1", 420, "16.22.1.1");
+
+        assertThat(service.collectOne(Region.AMERICAS)).isEqualTo(CollectOutcome.CAPPED);
+
+        verify(source, never()).timeline(Region.AMERICAS, "BR1_1");
+    }
+
+    @Test
+    void zeroMeansNoCap() {
+        service = serviceWithCap(0);
+        when(store.countByPatchAndRegion("16.22", Region.AMERICAS)).thenReturn(15_000L);
+        when(store.countByPatchAndRegion("16.21", Region.AMERICAS)).thenReturn(15_000L);
+        matchIs("BR1_1", 420, "16.22.1.1");
+        reduced();
+
+        assertThat(service.collectOne(Region.AMERICAS)).isEqualTo(CollectOutcome.SAVED);
+    }
+
+    @Test
+    void savedMatchUpdatesCachedCapBeforeNextTimeline() {
+        service = serviceWithCap(1);
+        when(store.countByPatchAndRegion("16.22", Region.AMERICAS)).thenReturn(0L);
+        when(store.countByPatchAndRegion("16.21", Region.AMERICAS)).thenReturn(0L);
+        when(source.rankedMatchIds(any(), anyString(), any())).thenReturn(List.of("BR1_1", "BR1_2"));
+        matchIs("BR1_1", 420, "16.22.1.1");
+        matchIs("BR1_2", 420, "16.22.1.1");
+        reduced();
+
+        assertThat(service.collectOne(Region.AMERICAS)).isEqualTo(CollectOutcome.SAVED);
+
+        verify(source, times(1)).timeline(any(), anyString());
+        verify(store, times(1)).saveIfAbsent(any());
     }
 
     @Test

@@ -43,4 +43,10 @@ class MongoMatchStore implements MatchStore {
         return mongo.count(Query.query(Criteria.where("collectedAt").gte(since).and("region").is(r.name())),
                 MatchDocument.class);
     }
+
+    @Override
+    public long countByPatchAndRegion(String patch, Region region) {
+        return mongo.count(Query.query(Criteria.where("patch").is(patch).and("region").is(region.name())),
+                MatchDocument.class);
+    }
 }

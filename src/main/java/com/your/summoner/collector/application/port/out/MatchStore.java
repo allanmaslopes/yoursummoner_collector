@@ -14,4 +14,6 @@ public interface MatchStore {
     long deleteOlderThan(PatchVersion oldestKept);
 
     long countSince(Instant since, Region r);
+
+    long countByPatchAndRegion(String patch, Region region);
 }
