@@ -85,6 +85,23 @@ class MatchReducerTest {
     }
 
     @Test
+    void reducesStatPerks() {
+        var statPerks = reduce().participants().get(0).runes().statPerks();
+
+        assertThat(statPerks).isEqualTo(new CollectedMatch.StatPerks(5005, 5008, 5011));
+    }
+
+    @Test
+    void missingStatPerksIsNull() throws Exception {
+        RiotMatch withoutStatPerks = JSON.readValue(JSON.writeValueAsString(match)
+                .replaceAll("\\\"statPerks\\\"\\s*:\\s*\\{[^}]*},?", ""), RiotMatch.class);
+
+        CollectedMatch reduced = reducer.reduce(withoutStatPerks, timeline, Platform.BR1, Tier.MASTER, NOW);
+
+        assertThat(reduced.participants().get(0).runes().statPerks()).isNull();
+    }
+
+    @Test
     void itemsWithoutZeros() {
         assertThat(reduce().participants().get(0).items()).containsExactly(1055, 3340);
     }

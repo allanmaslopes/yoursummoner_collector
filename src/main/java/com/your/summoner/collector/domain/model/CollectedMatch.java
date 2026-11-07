@@ -31,11 +31,17 @@ public record CollectedMatch(int schemaVersion, String matchId, Platform platfor
         }
     }
 
-    public record Runes(int primaryStyle, int subStyle, List<Integer> perks) {
+    public record Runes(int primaryStyle, int subStyle, List<Integer> perks, StatPerks statPerks) {
         public Runes {
             perks = copy(perks);
         }
+
+        public Runes(int primaryStyle, int subStyle, List<Integer> perks) {
+            this(primaryStyle, subStyle, perks, null);
+        }
     }
+
+    public record StatPerks(int offense, int flex, int defense) {}
 
     public enum EventType { BUY, SELL, UNDO, SKILL }
 

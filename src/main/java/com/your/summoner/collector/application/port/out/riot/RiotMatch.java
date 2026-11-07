@@ -33,11 +33,14 @@ public record RiotMatch(Metadata metadata, Info info) {
                               int totalMinionsKilled, int neutralMinionsKilled, int champLevel, int visionScore) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record Perks(List<Style> styles) {
+    public record Perks(StatPerks statPerks, List<Style> styles) {
         public Perks {
             styles = styles == null ? List.of() : List.copyOf(styles);
         }
     }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record StatPerks(int defense, int flex, int offense) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Style(int style, List<Selection> selections) {

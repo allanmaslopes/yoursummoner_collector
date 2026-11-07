@@ -60,8 +60,11 @@ public class MatchReducer {
 
     private Runes runes(RiotMatch.Perks perks) {
         List<RiotMatch.Style> st = perks == null ? List.of() : perks.styles();
+        RiotMatch.StatPerks statPerks = perks == null ? null : perks.statPerks();
         return new Runes(st.size() > 0 ? st.get(0).style() : 0, st.size() > 1 ? st.get(1).style() : 0,
-                st.stream().flatMap(s -> s.selections().stream()).map(RiotMatch.Selection::perk).toList());
+                st.stream().flatMap(s -> s.selections().stream()).map(RiotMatch.Selection::perk).toList(),
+                statPerks == null ? null : new CollectedMatch.StatPerks(statPerks.offense(), statPerks.flex(),
+                        statPerks.defense()));
     }
 
     private List<TimelineEvent> events(RiotTimeline.Info tl, List<RiotTimeline.Event> all) {

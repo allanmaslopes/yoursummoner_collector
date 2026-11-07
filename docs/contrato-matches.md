@@ -37,7 +37,7 @@ Um documento por partida. `_id` é igual a `matchId`. Datas são `Date` (UTC) do
 | `win` | boolean | |
 | `items` | int[] | Itens finais, sem zeros (até 7). |
 | `summonerSpells` | int[] | Os dois feitiços. |
-| `runes` | objeto | `primaryStyle` int, `subStyle` int, `perks` int[]. |
+| `runes` | objeto | `primaryStyle` int, `subStyle` int, `perks` int[] e `statPerks` objeto `{ offense, flex, defense }` (ints). `statPerks` estÃ¡ ausente em partidas anteriores a 2026-11-07. |
 | `kills`, `deaths`, `assists` | int | |
 | `physicalDamage`, `magicDamage`, `trueDamage` | int | Dano a campeões, por tipo. |
 | `damageTaken` | int | |

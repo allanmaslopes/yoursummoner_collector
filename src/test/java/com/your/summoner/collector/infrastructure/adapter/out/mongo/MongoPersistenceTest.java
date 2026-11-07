@@ -48,7 +48,8 @@ class MongoPersistenceTest {
         var frame = new CollectedMatch.Frame(1,
                 List.of(new CollectedMatch.SlotState(1, 100, 500, 3, 800, 20)), 1, 2);
         var participant = new CollectedMatch.Participant(1, 100, 266, "TOP", true, List.of(3006), List.of(4, 12),
-                new CollectedMatch.Runes(8000, 8100, List.of(8005)), 1, 2, 3, 100, 200, 300, 400, 5000, 150, 11, 20);
+                new CollectedMatch.Runes(8000, 8100, List.of(8005), new CollectedMatch.StatPerks(5005, 5008, 5011)),
+                1, 2, 3, 100, 200, 300, 400, 5000, 150, 11, 20);
         var event = new CollectedMatch.TimelineEvent(60, 1, EventType.BUY, 3006, null, 0);
         return new CollectedMatch(2, id, Platform.BR1, region, patch, patch + ".1.1", 420, 1800,
                 Instant.parse("2026-11-06T10:00:00Z"), 100, Tier.CHALLENGER, List.of(participant), List.of(frame),
@@ -158,5 +159,16 @@ class MongoPersistenceTest {
             assertThat(event.getInteger("frame")).isZero();
             assertThat(event).doesNotContainKey("situation");
         });
+    }
+
+    @Test
+    void statPerksRoundTrip() {
+        matches.saveIfAbsent(match("BR1_5", "16.22", Region.AMERICAS, Instant.now()));
+
+        Document raw = mongo.findOne(new Query(), Document.class, "matches");
+
+        assertThat(raw.getList("participants", Document.class)).singleElement().satisfies(participant ->
+                assertThat(participant.get("runes", Document.class).get("statPerks", Document.class)
+                        .getInteger("offense")).isEqualTo(5005));
     }
 }
