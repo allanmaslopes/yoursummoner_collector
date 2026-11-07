@@ -45,13 +45,14 @@ class MongoPersistenceTest {
     }
 
     private static CollectedMatch match(String id, String patch, Region region, Instant collectedAt) {
-        var situation = new CollectedMatch.Situation(List.of(new CollectedMatch.SlotState(1, 100, 500, 3, 800, 20)), 1, 2);
+        var frame = new CollectedMatch.Frame(1,
+                List.of(new CollectedMatch.SlotState(1, 100, 500, 3, 800, 20)), 1, 2);
         var participant = new CollectedMatch.Participant(1, 100, 266, "TOP", true, List.of(3006), List.of(4, 12),
                 new CollectedMatch.Runes(8000, 8100, List.of(8005)), 1, 2, 3, 100, 200, 300, 400, 5000, 150, 11, 20);
-        var event = new CollectedMatch.TimelineEvent(60000, 1, EventType.BUY, 3006, null, situation);
-        return new CollectedMatch(1, id, Platform.BR1, region, patch, patch + ".1.1", 420, 1800,
-                Instant.parse("2026-11-06T10:00:00Z"), 100, Tier.CHALLENGER, List.of(participant), List.of(event),
-                collectedAt);
+        var event = new CollectedMatch.TimelineEvent(60, 1, EventType.BUY, 3006, null, 0);
+        return new CollectedMatch(2, id, Platform.BR1, region, patch, patch + ".1.1", 420, 1800,
+                Instant.parse("2026-11-06T10:00:00Z"), 100, Tier.CHALLENGER, List.of(participant), List.of(frame),
+                List.of(event), collectedAt);
     }
 
     @Test
@@ -135,5 +136,27 @@ class MongoPersistenceTest {
         String json = raw.toJson();
         assertThat(json).contains("BR1_3");
         assertThat(json).doesNotContain("puuid", "riotId", "summonerName", "summonerId", "gameName", "tagLine");
+    }
+
+    @Test
+    void storedDocumentMapsFramesAndEventReferences() {
+        matches.saveIfAbsent(match("BR1_4", "16.22", Region.AMERICAS, Instant.now()));
+
+        Document raw = mongo.findOne(new Query(), Document.class, "matches");
+        List<Document> frames = raw.getList("frames", Document.class);
+        List<Document> events = raw.getList("events", Document.class);
+
+        assertThat(raw.getInteger("schemaVersion")).isEqualTo(2);
+        assertThat(frames).singleElement().satisfies(frame -> {
+            assertThat(frame.getInteger("minute")).isEqualTo(1);
+            assertThat(frame.getInteger("blueKills")).isEqualTo(1);
+            assertThat(frame.getInteger("redKills")).isEqualTo(2);
+            assertThat(frame.getList("slots", Document.class)).singleElement()
+                    .satisfies(slot -> assertThat(slot.getInteger("slot")).isEqualTo(1));
+        });
+        assertThat(events).singleElement().satisfies(event -> {
+            assertThat(event.getInteger("frame")).isZero();
+            assertThat(event).doesNotContainKey("situation");
+        });
     }
 }

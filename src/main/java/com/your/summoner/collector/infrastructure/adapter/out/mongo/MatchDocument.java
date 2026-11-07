@@ -16,14 +16,14 @@ import java.util.List;
 public record MatchDocument(@Id String id, int schemaVersion, String matchId, Platform platform, Region region,
                             String patch, int patchMajor, int patchMinor, String gameVersion, int queueId,
                             int gameDurationSec, Instant gameStartHour, int winningTeam, Tier tier,
-                            List<CollectedMatch.Participant> participants, List<CollectedMatch.TimelineEvent> events,
-                            Instant collectedAt) {
+                            List<CollectedMatch.Participant> participants, List<CollectedMatch.Frame> frames,
+                            List<CollectedMatch.TimelineEvent> events, Instant collectedAt) {
 
     static MatchDocument from(CollectedMatch m) {
         PatchVersion pv = PatchVersion.parse(m.patch())
                 .orElseThrow(() -> new IllegalArgumentException("invalid patch: " + m.patch()));
         return new MatchDocument(m.matchId(), m.schemaVersion(), m.matchId(), m.platform(), m.region(), m.patch(),
                 pv.major(), pv.minor(), m.gameVersion(), m.queueId(), m.gameDurationSec(), m.gameStartHour(),
-                m.winningTeam(), m.tier(), m.participants(), m.events(), m.collectedAt());
+                m.winningTeam(), m.tier(), m.participants(), m.frames(), m.events(), m.collectedAt());
     }
 }

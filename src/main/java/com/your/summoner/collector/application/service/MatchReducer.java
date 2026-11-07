@@ -4,9 +4,9 @@ import com.your.summoner.collector.application.port.out.riot.RiotMatch;
 import com.your.summoner.collector.application.port.out.riot.RiotTimeline;
 import com.your.summoner.collector.domain.model.CollectedMatch;
 import com.your.summoner.collector.domain.model.CollectedMatch.EventType;
+import com.your.summoner.collector.domain.model.CollectedMatch.Frame;
 import com.your.summoner.collector.domain.model.CollectedMatch.Participant;
 import com.your.summoner.collector.domain.model.CollectedMatch.Runes;
-import com.your.summoner.collector.domain.model.CollectedMatch.Situation;
 import com.your.summoner.collector.domain.model.CollectedMatch.SlotState;
 import com.your.summoner.collector.domain.model.CollectedMatch.TimelineEvent;
 import com.your.summoner.collector.domain.model.PatchVersion;
@@ -38,11 +38,13 @@ public class MatchReducer {
                 .findFirst().orElse(0);
         Map<Integer, Integer> teamBySlot = new HashMap<>();
         info.participants().forEach(x -> teamBySlot.put(x.participantId(), x.teamId()));
+        List<RiotTimeline.Event> timelineEvents = tl.info().frames().stream()
+                .flatMap(f -> f.events().stream()).toList();
         return new CollectedMatch(CollectedMatch.SCHEMA_VERSION, m.metadata().matchId(), p, p.matchRegion(),
                 patch.toString(), info.gameVersion(), info.queueId(), (int) info.gameDuration(),
                 Instant.ofEpochMilli(info.gameStartTimestamp()).truncatedTo(ChronoUnit.HOURS), winning, tier,
                 info.participants().stream().map(this::participant).toList(),
-                events(tl.info(), teamBySlot), collectedAt);
+                frames(tl.info(), timelineEvents, teamBySlot), events(tl.info(), timelineEvents), collectedAt);
     }
 
     private Participant participant(RiotMatch.Participant x) {
@@ -62,9 +64,7 @@ public class MatchReducer {
                 st.stream().flatMap(s -> s.selections().stream()).map(RiotMatch.Selection::perk).toList());
     }
 
-    private List<TimelineEvent> events(RiotTimeline.Info tl, Map<Integer, Integer> teamBySlot) {
-        List<RiotTimeline.Event> all = tl.frames().stream().flatMap(f -> f.events().stream()).toList();
-        List<RiotTimeline.Event> kills = all.stream().filter(e -> "CHAMPION_KILL".equals(e.type())).toList();
+    private List<TimelineEvent> events(RiotTimeline.Info tl, List<RiotTimeline.Event> all) {
         List<TimelineEvent> out = new ArrayList<>();
         for (RiotTimeline.Event e : all) {
             EventType type = switch (e.type() == null ? "" : e.type()) {
@@ -80,30 +80,32 @@ public class MatchReducer {
             boolean skill = type == EventType.SKILL;
             out.add(new TimelineEvent((int) (e.timestamp() / 1000), e.participantId(), type,
                     skill ? null : e.itemId(), skill ? e.skillSlot() : null,
-                    type == EventType.BUY || skill ? situation(tl, e.timestamp(), kills, teamBySlot) : null));
+                    type == EventType.BUY || skill ? frameIndex(tl, e.timestamp()) : null));
         }
         out.sort(Comparator.comparingInt(TimelineEvent::t)); // estável: empate mantém a ordem original
         return out;
     }
 
-    private Situation situation(RiotTimeline.Info tl, long ts, List<RiotTimeline.Event> kills,
-                                Map<Integer, Integer> teamBySlot) {
-        Map<Integer, RiotTimeline.ParticipantFrame> frame = Map.of();
-        if (!tl.frames().isEmpty()) {
-            long idx = tl.frameInterval() > 0 ? Math.max(0, ts) / tl.frameInterval() : 0;
-            frame = tl.frames().get((int) Math.min(idx, tl.frames().size() - 1)).participantFrames();
-        }
-        Map<Integer, RiotTimeline.ParticipantFrame> pf = frame;
-        List<SlotState> slots = IntStream.rangeClosed(1, SLOTS).mapToObj(s -> {
-            RiotTimeline.ParticipantFrame f = pf.get(s);
-            return f == null ? new SlotState(s, 0, 0, 0, 0, 0)
-                    : new SlotState(s, f.currentGold(), f.totalGold(), f.level(), f.xp(),
+    private List<Frame> frames(RiotTimeline.Info tl, List<RiotTimeline.Event> all,
+                               Map<Integer, Integer> teamBySlot) {
+        List<RiotTimeline.Event> kills = all.stream().filter(e -> "CHAMPION_KILL".equals(e.type())).toList();
+        return IntStream.range(0, tl.frames().size())
+                .mapToObj(index -> frame(index, tl.frames().get(index), kills, teamBySlot))
+                .toList();
+    }
+
+    private Frame frame(int index, RiotTimeline.Frame frame, List<RiotTimeline.Event> kills,
+                        Map<Integer, Integer> teamBySlot) {
+        List<SlotState> slots = IntStream.rangeClosed(1, SLOTS).mapToObj(slot -> {
+            RiotTimeline.ParticipantFrame f = frame.participantFrames().get(slot);
+            return f == null ? new SlotState(slot, 0, 0, 0, 0, 0)
+                    : new SlotState(slot, f.currentGold(), f.totalGold(), f.level(), f.xp(),
                     f.minionsKilled() + f.jungleMinionsKilled());
         }).toList();
         int blue = 0;
         int red = 0;
         for (RiotTimeline.Event k : kills) {
-            if (k.timestamp() > ts) {
+            if (k.timestamp() > frame.timestamp() || k.killerId() < 1 || k.killerId() > SLOTS) {
                 continue;
             }
             Integer team = teamBySlot.get(k.killerId());
@@ -113,6 +115,14 @@ public class MatchReducer {
                 red++;
             }
         }
-        return new Situation(slots, blue, red);
+        return new Frame(index, slots, blue, red);
+    }
+
+    private Integer frameIndex(RiotTimeline.Info tl, long timestamp) {
+        if (tl.frames().isEmpty()) {
+            return null;
+        }
+        long index = tl.frameInterval() > 0 ? Math.max(0, timestamp) / tl.frameInterval() : 0;
+        return (int) Math.min(index, tl.frames().size() - 1);
     }
 }

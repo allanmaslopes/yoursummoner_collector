@@ -1,6 +1,6 @@
 # Contrato da coleção `matches`
 
-Banco `yoursummoner_collector`, coleção `matches`. Fonte da verdade: `CollectedMatch` (domínio) e `MatchDocument` (Mongo). Versão atual: `schemaVersion: 1`.
+Banco `yoursummoner_collector`, coleção `matches`. Fonte da verdade: `CollectedMatch` (domínio) e `MatchDocument` (Mongo). Versão atual: `schemaVersion: 2`. O coletor produz somente v2; documentos v1 já existentes não são convertidos nem produzidos novamente.
 
 ## Documento
 
@@ -9,7 +9,7 @@ Um documento por partida. `_id` é igual a `matchId`. Datas são `Date` (UTC) do
 | Campo | Tipo | Descrição |
 |---|---|---|
 | `_id` | string | Igual a `matchId`. |
-| `schemaVersion` | int | `1`. Muda só com quebra de contrato. |
+| `schemaVersion` | int | `2`. Muda só com quebra de contrato. |
 | `matchId` | string | Ex.: `BR1_3012345678`. Único. |
 | `platform` | string | `BR1`, `NA1`, `EUW1`, etc. |
 | `region` | string | `AMERICAS`, `EUROPE`, `ASIA` ou `SEA`. |
@@ -22,6 +22,7 @@ Um documento por partida. `_id` é igual a `matchId`. Datas são `Date` (UTC) do
 | `winningTeam` | int | `100` ou `200`. |
 | `tier` | string | `MASTER`, `GRANDMASTER` ou `CHALLENGER`: elo do jogador semente que trouxe a partida. |
 | `participants` | array (10) | Ver abaixo. |
+| `frames` | array | Um estado compacto por frame da timeline da Riot. Ver abaixo. |
 | `events` | array | Timeline ordenada por `t`. Ver abaixo. |
 | `collectedAt` | Date | Quando o coletor gravou. Chave de leitura do processor. |
 
@@ -29,7 +30,7 @@ Um documento por partida. `_id` é igual a `matchId`. Datas são `Date` (UTC) do
 
 | Campo | Tipo | Descrição |
 |---|---|---|
-| `slot` | int | 1 a 10 (`participantId` da Riot). Liga participante, eventos e situação. |
+| `slot` | int | 1 a 10 (`participantId` da Riot). Liga participante, eventos e frames. |
 | `team` | int | `100` ou `200`. |
 | `championId` | int | |
 | `position` | string | Como a Riot informa (`TOP`, `JUNGLE`, `MIDDLE`, `BOTTOM`, `UTILITY`); pode vir vazio. |
@@ -45,6 +46,17 @@ Um documento por partida. `_id` é igual a `matchId`. Datas são `Date` (UTC) do
 | `champLevel` | int | |
 | `visionScore` | int | |
 
+### `frames[]`
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `minute` | int | Índice ordinal do frame na timeline (`0`, `1`, `2`, ...), independentemente do timestamp. |
+| `slots` | array (10) | Estado dos slots 1 a 10 no frame. Slot ausente na resposta da Riot é gravado com valores zero. |
+| `blueKills` | int | Abates do time 100 com `CHAMPION_KILL.timestamp` menor ou igual ao timestamp do frame. |
+| `redKills` | int | Abates do time 200 com `CHAMPION_KILL.timestamp` menor ou igual ao timestamp do frame. |
+
+Cada entrada de `slots` contém `{ slot, gold, totalGold, level, xp, cs }`; `gold` é o ouro atual e `cs` soma tropas e monstros da selva. `frames` preserva a ordem da timeline, e seu índice é a referência usada pelos eventos.
+
 ### `events[]`
 
 | Campo | Tipo | Descrição |
@@ -54,9 +66,7 @@ Um documento por partida. `_id` é igual a `matchId`. Datas são `Date` (UTC) do
 | `type` | string | `BUY`, `SELL`, `UNDO` ou `SKILL`. |
 | `itemId` | int | Nos eventos de item (`BUY`, `SELL`, `UNDO`). |
 | `skillSlot` | int | Só em `SKILL`: 1 a 4 (Q, W, E, R). |
-| `situation` | objeto | Só em `BUY` e `SKILL`. Estado do frame anterior ao evento (frames são por minuto). |
-
-`situation`: `blueKills` e `redKills` (int, abates por time até o evento) e `slots[]` com 10 entradas `{ slot, gold, totalGold, level, xp, cs }` (`gold` é o ouro atual). Quem saiu da partida tem a entrada zerada.
+| `frame` | int | Só em `BUY` e `SKILL`: índice em `frames`, calculado por `floor(timestamp / frameInterval)`, limitado entre zero e o último frame. Ausente nos demais eventos. |
 
 ## Índices
 

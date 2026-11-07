@@ -59,7 +59,8 @@ class MatchReducerTest {
     @Test
     void reducesParticipantsAndWinner() {
         CollectedMatch c = reduce();
-        assertThat(c.schemaVersion()).isEqualTo(CollectedMatch.SCHEMA_VERSION);
+        assertThat(CollectedMatch.SCHEMA_VERSION).isEqualTo(2);
+        assertThat(c.schemaVersion()).isEqualTo(2);
         assertThat(c.matchId()).isEqualTo("BR1_3000000001");
         assertThat(c.region()).isEqualTo(Region.AMERICAS);
         assertThat(c.patch()).isEqualTo("16.22");
@@ -89,10 +90,24 @@ class MatchReducerTest {
     }
 
     @Test
+    void reducesTimelineFramesOnce() {
+        CollectedMatch c = reduce();
+
+        assertThat(c.frames()).extracting(CollectedMatch.Frame::minute).containsExactly(0, 1, 2, 3);
+        assertThat(c.frames()).allSatisfy(frame -> assertThat(frame.slots()).hasSize(10));
+        assertThat(c.frames().get(0).slots().get(0).gold()).isEqualTo(501);
+        assertThat(c.frames().get(3).slots().get(9).cs()).isEqualTo(24);
+    }
+
+    @Test
     void buyHasSituationFromPreviousFrame() {
-        CollectedMatch.Situation s = event(reduce(), EventType.BUY, 3, 61).situation();
-        assertThat(s.slots()).hasSize(10);
-        assertThat(s.slots().get(0)).isEqualTo(new CollectedMatch.SlotState(1, 601, 751, 3, 400, 8));
+        CollectedMatch c = reduce();
+        TimelineEvent e = event(c, EventType.BUY, 3, 61);
+        assertThat(e.frame()).isEqualTo(1);
+        CollectedMatch.Frame frame = c.frames().get(e.frame());
+        assertThat(frame.minute()).isEqualTo(1);
+        assertThat(frame.slots()).hasSize(10);
+        assertThat(frame.slots().get(0)).isEqualTo(new CollectedMatch.SlotState(1, 601, 751, 3, 400, 8));
     }
 
     @Test
@@ -100,40 +115,61 @@ class MatchReducerTest {
         TimelineEvent e = event(reduce(), EventType.SKILL, 2, 80);
         assertThat(e.skillSlot()).isNotNull();
         assertThat(e.itemId()).isNull();
-        assertThat(e.situation()).isNotNull();
+        assertThat(e.frame()).isNotNull();
     }
 
     @Test
     void sellAndUndoHaveNoSituation() {
         CollectedMatch c = reduce();
-        assertThat(event(c, EventType.SELL, 3, 62).situation()).isNull();
-        assertThat(event(c, EventType.UNDO, 3, 63).situation()).isNull();
+        assertThat(event(c, EventType.SELL, 3, 62).frame()).isNull();
+        assertThat(event(c, EventType.UNDO, 3, 63).frame()).isNull();
         assertThat(c.events()).extracting(TimelineEvent::t).isSorted();
     }
 
     @Test
     void killsCountedUntilEvent() {
         CollectedMatch c = reduce();
-        assertThat(event(c, EventType.BUY, 3, 61).situation().redKills()).isZero();
-        CollectedMatch.Situation afterRedKill = event(c, EventType.SKILL, 2, 80).situation();
-        assertThat(afterRedKill.redKills()).isEqualTo(1);
-        assertThat(afterRedKill.blueKills()).isZero();
-        assertThat(event(c, EventType.BUY, 1, 121).situation().blueKills()).isZero();
-        CollectedMatch.Situation afterBoth = event(c, EventType.SKILL, 6, 140).situation();
-        assertThat(afterBoth.blueKills()).isEqualTo(1);
-        assertThat(afterBoth.redKills()).isEqualTo(1);
+        CollectedMatch.Frame minuteOne = c.frames().get(event(c, EventType.BUY, 3, 61).frame());
+        assertThat(minuteOne.blueKills()).isZero();
+        assertThat(minuteOne.redKills()).isZero();
+        assertThat(event(c, EventType.SKILL, 2, 80).frame()).isEqualTo(1);
+
+        CollectedMatch.Frame minuteTwo = c.frames().get(event(c, EventType.BUY, 1, 121).frame());
+        assertThat(minuteTwo.blueKills()).isZero();
+        assertThat(minuteTwo.redKills()).isEqualTo(1);
+        assertThat(event(c, EventType.SKILL, 6, 140).frame()).isEqualTo(2);
+
+        CollectedMatch.Frame minuteThree = c.frames().get(event(c, EventType.BUY, 6, 181).frame());
+        assertThat(minuteThree.blueKills()).isEqualTo(1);
+        assertThat(minuteThree.redKills()).isEqualTo(1);
     }
 
     @Test
     void eventBeforeFirstFrameUsesFrameZero() {
         var pf = Map.of(1, new RiotTimeline.ParticipantFrame(500, 500, 1, 0, 0, 0));
-        // primeiro frame em 60 s; evento em 0,5 s cai no frame 0; evento após o último frame usa o último
+        // Índice negativo é limitado a zero; evento após o último frame usa o último.
         var tl = timelineOf(new RiotTimeline.Frame(60000, pf, List.of(
-                new RiotTimeline.Event("ITEM_PURCHASED", 500, 1, 1055, 0, 0),
+                new RiotTimeline.Event("ITEM_PURCHASED", -500, 1, 1055, 0, 0),
                 new RiotTimeline.Event("ITEM_PURCHASED", 900000, 1, 1055, 0, 0))));
         CollectedMatch c = reducer.reduce(match, tl, Platform.BR1, Tier.MASTER, NOW);
         assertThat(c.events()).hasSize(2);
-        assertThat(c.events()).allSatisfy(e -> assertThat(e.situation().slots().get(0).gold()).isEqualTo(500));
+        assertThat(c.frames()).hasSize(1);
+        assertThat(c.frames().get(0).minute()).isZero();
+        assertThat(c.events()).allSatisfy(e -> assertThat(e.frame()).isZero());
+        assertThat(c.frames().get(0).slots().get(0).gold()).isEqualTo(500);
+    }
+
+    @Test
+    void frameMinuteUsesOrdinalIndexWithIrregularTimestamps() {
+        var pf = Map.of(1, new RiotTimeline.ParticipantFrame(500, 500, 1, 0, 0, 0));
+        var tl = timelineOf(
+                new RiotTimeline.Frame(1000, pf, List.of()),
+                new RiotTimeline.Frame(135000, pf, List.of()),
+                new RiotTimeline.Frame(500000, pf, List.of()));
+
+        CollectedMatch c = reducer.reduce(match, tl, Platform.BR1, Tier.MASTER, NOW);
+
+        assertThat(c.frames()).extracting(CollectedMatch.Frame::minute).containsExactly(0, 1, 2);
     }
 
     @Test
@@ -141,10 +177,59 @@ class MatchReducerTest {
         var tl = timelineOf(new RiotTimeline.Frame(0,
                 Map.of(1, new RiotTimeline.ParticipantFrame(1, 2, 3, 4, 5, 6)),
                 List.of(new RiotTimeline.Event("ITEM_PURCHASED", 1000, 1, 1055, 0, 0))));
-        CollectedMatch.Situation s = reducer.reduce(match, tl, Platform.BR1, Tier.MASTER, NOW)
-                .events().get(0).situation();
-        assertThat(s.slots().get(0)).isEqualTo(new CollectedMatch.SlotState(1, 1, 2, 3, 4, 11));
-        assertThat(s.slots().get(2)).isEqualTo(new CollectedMatch.SlotState(3, 0, 0, 0, 0, 0));
+        CollectedMatch.Frame frame = reducer.reduce(match, tl, Platform.BR1, Tier.MASTER, NOW).frames().get(0);
+        assertThat(frame.slots()).hasSize(10);
+        assertThat(frame.slots().get(0)).isEqualTo(new CollectedMatch.SlotState(1, 1, 2, 3, 4, 11));
+        assertThat(frame.slots().get(2)).isEqualTo(new CollectedMatch.SlotState(3, 0, 0, 0, 0, 0));
+    }
+
+    @Test
+    void invalidKillerDoesNotChangeFrameScore() {
+        var pf = Map.of(1, new RiotTimeline.ParticipantFrame(500, 500, 1, 0, 0, 0));
+        var tl = timelineOf(new RiotTimeline.Frame(0, pf, List.of(
+                new RiotTimeline.Event("CHAMPION_KILL", 0, 0, 0, 0, 99))));
+
+        CollectedMatch.Frame frame = reducer.reduce(match, tl, Platform.BR1, Tier.MASTER, NOW).frames().get(0);
+
+        assertThat(frame.blueKills()).isZero();
+        assertThat(frame.redKills()).isZero();
+    }
+
+    @Test
+    void killAtFrameTimestampIsCounted() {
+        var pf = Map.of(1, new RiotTimeline.ParticipantFrame(500, 500, 1, 0, 0, 0));
+        var tl = timelineOf(
+                new RiotTimeline.Frame(0, pf, List.of()),
+                new RiotTimeline.Frame(60000, pf, List.of(
+                        new RiotTimeline.Event("CHAMPION_KILL", 60000, 0, 0, 0, 1))));
+
+        CollectedMatch.Frame frame = reducer.reduce(match, tl, Platform.BR1, Tier.MASTER, NOW).frames().get(1);
+
+        assertThat(frame.blueKills()).isEqualTo(1);
+        assertThat(frame.redKills()).isZero();
+    }
+
+    @Test
+    void documentIsSmall() {
+        JsonNode json = JSON.valueToTree(reduce());
+        int compactSlotStates = 0;
+        for (JsonNode frame : json.path("frames")) {
+            compactSlotStates += frame.path("slots").size();
+        }
+        int eventsWithFrame = 0;
+        for (JsonNode e : json.path("events")) {
+            if (!e.path("frame").isMissingNode() && !e.path("frame").isNull()) {
+                eventsWithFrame++;
+            }
+        }
+        int v1RepeatedSlotStates = eventsWithFrame * 10;
+
+        assertThat(json.path("frames").size()).isEqualTo(4);
+        assertThat(eventsWithFrame).isEqualTo(9);
+        assertThat(compactSlotStates).isEqualTo(40);
+        assertThat(v1RepeatedSlotStates).isEqualTo(90);
+        assertThat(compactSlotStates).isLessThan(v1RepeatedSlotStates);
+        assertThat(json.toString()).doesNotContain("\"situation\"");
     }
 
     @Test

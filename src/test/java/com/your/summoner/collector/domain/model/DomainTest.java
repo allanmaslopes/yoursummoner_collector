@@ -54,6 +54,18 @@ class DomainTest {
     }
 
     @Test
+    void frameSlotsAreImmutable() {
+        List<CollectedMatch.SlotState> slots = new ArrayList<>(List.of(
+                new CollectedMatch.SlotState(1, 500, 500, 1, 0, 0)));
+        var frame = new CollectedMatch.Frame(0, slots, 0, 0);
+
+        slots.add(new CollectedMatch.SlotState(2, 500, 500, 1, 0, 0));
+
+        assertEquals(1, frame.slots().size());
+        assertThrows(UnsupportedOperationException.class, () -> frame.slots().clear());
+    }
+
+    @Test
     void tierOrderIsAscending() {
         assertTrue(Tier.MASTER.compareTo(Tier.CHALLENGER) < 0);
     }

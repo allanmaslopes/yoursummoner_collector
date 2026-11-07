@@ -9,14 +9,15 @@ import java.util.Objects;
  */
 public record CollectedMatch(int schemaVersion, String matchId, Platform platform, Region region, String patch,
                              String gameVersion, int queueId, int gameDurationSec, Instant gameStartHour,
-                             int winningTeam, Tier tier, List<Participant> participants, List<TimelineEvent> events,
-                             Instant collectedAt) {
+                             int winningTeam, Tier tier, List<Participant> participants, List<Frame> frames,
+                             List<TimelineEvent> events, Instant collectedAt) {
 
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
 
     public CollectedMatch {
         Objects.requireNonNull(matchId);
         participants = copy(participants);
+        frames = copy(frames);
         events = copy(events);
     }
 
@@ -38,13 +39,13 @@ public record CollectedMatch(int schemaVersion, String matchId, Platform platfor
 
     public enum EventType { BUY, SELL, UNDO, SKILL }
 
-    /** {@code situation} só existe em BUY e SKILL. */
+    /** {@code frame} referencia {@link CollectedMatch#frames()} só em BUY e SKILL. */
     public record TimelineEvent(int t, int slot, EventType type, Integer itemId, Integer skillSlot,
-                                Situation situation) {
+                                Integer frame) {
     }
 
-    public record Situation(List<SlotState> slots, int blueKills, int redKills) {
-        public Situation {
+    public record Frame(int minute, List<SlotState> slots, int blueKills, int redKills) {
+        public Frame {
             slots = copy(slots);
         }
     }

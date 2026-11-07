@@ -84,8 +84,9 @@ class PipelineTest {
     }
 
     private CollectedMatch reduced() {
-        CollectedMatch m = new CollectedMatch(1, "BR1_1", Platform.BR1, Region.AMERICAS, "16.22", "16.22.1", 420, 1800,
-                Instant.EPOCH, 100, Tier.CHALLENGER, List.of(), List.of(), Instant.EPOCH);
+        CollectedMatch m = new CollectedMatch(CollectedMatch.SCHEMA_VERSION, "BR1_1", Platform.BR1,
+                Region.AMERICAS, "16.22", "16.22.1", 420, 1800, Instant.EPOCH, 100, Tier.CHALLENGER,
+                List.of(), List.of(), List.of(), Instant.EPOCH);
         when(reducer.reduce(any(), any(), any(), any(), any())).thenReturn(m);
         return m;
     }
