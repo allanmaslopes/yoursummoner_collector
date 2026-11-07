@@ -29,3 +29,7 @@ Development here follows the [superpowers](https://github.com/obra/superpowers) 
 | Before saying the work is done, passes or is ready to commit | `superpowers:verification-before-completion` |
 | After a task or before a merge, and when review comments arrive | `superpowers:requesting-code-review`, `superpowers:receiving-code-review` |
 | The branch is complete | `superpowers:finishing-a-development-branch` |
+
+## Ferramentas do workspace
+
+Scripts de rotina em `D:\Workspace\Scripts\yoursummoner` (ver `README.md` lá): `verify.ps1 -Repo <repo>` (build e testes com resumo), `stack.ps1 up|down|status` (Mongo, API, coletor, processor), `collector-check.ps1`, `board.ps1` (quadro). JDK 25 em `D:\Workspace\Languages-Frameworks\jdk-25.0.4.1+1`, Maven em `D:\Workspace\Languages-Frameworkspache-maven-3.10.0`. Agente delegado não roda git.
