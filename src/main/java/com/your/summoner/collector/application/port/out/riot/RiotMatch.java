@@ -30,7 +30,8 @@ public record RiotMatch(Metadata metadata, Info info) {
                               int kills, int deaths, int assists,
                               int physicalDamageDealtToChampions, int magicDamageDealtToChampions,
                               int trueDamageDealtToChampions, int totalDamageTaken, int goldEarned,
-                              int totalMinionsKilled, int neutralMinionsKilled, int champLevel, int visionScore) {}
+                              int totalMinionsKilled, int neutralMinionsKilled, int champLevel, int visionScore,
+                              int timeCCingOthers, int totalHeal) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Perks(StatPerks statPerks, List<Style> styles) {

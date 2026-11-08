@@ -45,6 +45,8 @@ Um documento por partida. `_id` é igual a `matchId`. Datas são `Date` (UTC) do
 | `cs` | int | Tropas mais monstros da selva. |
 | `champLevel` | int | |
 | `visionScore` | int | |
+| `timeCCingOthers` | int | Tempo de controle aplicado a outros, em segundos. Ausente na Riot vira 0; campo aditivo, 0 em partidas anteriores a 2026-11-08. |
+| `totalHeal` | int | Cura total do participante (em si e aliados). Ausente na Riot vira 0; aditivo como o anterior. |
 
 ### `frames[]`
 

@@ -55,7 +55,7 @@ public class MatchReducer {
                 List.of(x.summoner1Id(), x.summoner2Id()), runes(x.perks()), x.kills(), x.deaths(), x.assists(),
                 x.physicalDamageDealtToChampions(), x.magicDamageDealtToChampions(), x.trueDamageDealtToChampions(),
                 x.totalDamageTaken(), x.goldEarned(), x.totalMinionsKilled() + x.neutralMinionsKilled(),
-                x.champLevel(), x.visionScore());
+                x.champLevel(), x.visionScore(), x.timeCCingOthers(), x.totalHeal());
     }
 
     private Runes runes(RiotMatch.Perks perks) {

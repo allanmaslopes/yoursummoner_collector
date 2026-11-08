@@ -24,7 +24,8 @@ public record CollectedMatch(int schemaVersion, String matchId, Platform platfor
     public record Participant(int slot, int team, int championId, String position, boolean win, List<Integer> items,
                               List<Integer> summonerSpells, Runes runes, int kills, int deaths, int assists,
                               int physicalDamage, int magicDamage, int trueDamage, int damageTaken,
-                              int goldEarned, int cs, int champLevel, int visionScore) {
+                              int goldEarned, int cs, int champLevel, int visionScore,
+                              int timeCCingOthers, int totalHeal) {
         public Participant {
             items = copy(items);
             summonerSpells = copy(summonerSpells);

@@ -42,7 +42,7 @@ class DomainTest {
     void listsAreImmutable() {
         List<Integer> items = new ArrayList<>(List.of(1, 2));
         var p = new CollectedMatch.Participant(1, 100, 412, "UTILITY", true, items, null,
-                new CollectedMatch.Runes(8000, 8100, List.of(1)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+                new CollectedMatch.Runes(8000, 8100, List.of(1)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0);
         items.add(3);
         assertEquals(List.of(1, 2), p.items());
         assertThrows(UnsupportedOperationException.class, () -> p.items().add(3));
